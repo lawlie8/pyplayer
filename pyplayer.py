@@ -3,12 +3,15 @@ import ctypes
 import tkinter as tk
 from tkinter import *
 import os
-
+import sys
+import vlc
 class pyplayer(object):
     """docstring forpyplayer."""
     def initilise(arg):
-        os.system('cd /')
-        os.system('ls')
+        #os.chdir('/')
+        #os.system('ls')
+        os.system('mkdir .pyplayerdata')
+
         pass
 
     def check_for_playlist(arg):
@@ -24,11 +27,14 @@ class pyplayer(object):
         window.geometry("1024x720")
         window.title("pyplayer")
         window.configure(bg='#333338')
+        window.iconbitmap('assets/py_icon.ico')
+        mycanvas = tk.Canvas(window,bg="#333338",height=150,bd='0',highlightthickness=0)
+        mycanvas.pack(anchor='w',fill='x')
         window.mainloop()
         return window
 
 
 
 k = pyplayer()
-#k.fname()
+k.fname()
 k.initilise()
