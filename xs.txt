@@ -1,1 +1,0 @@
-{'version': '1.0', 'platform': 'win32', 'author': 'lawlie8', 'last_modified': '2020-10-01/20:47:48'}
