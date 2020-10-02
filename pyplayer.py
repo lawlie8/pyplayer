@@ -28,13 +28,15 @@ class pyplayer(object):
         check_file = open('.pyplayerdata/config.pyplayer')
         return check_file.readlines()[0]
 
-    def add_songs(arg):
-#        for dirs in dir_list:
+    def stop(arg):
+        print('stop')
+    def next(arg):
+        print('next')
+    def prev(arg):
+        print('prev')
+    def pause(arg):
+        print('pause')
 
-
-
-
-        pass
 
 
     def fname(arg):
@@ -48,18 +50,31 @@ class pyplayer(object):
         mycanvas = tk.Canvas(window,bg="#333338",height=150,bd='0',highlightthickness=1)
         mycanvas.pack(anchor='w',fill='x')
         next_button = PhotoImage(file='assets/next.png')
-        next_button = next_button.subsample(2,2)
+        next_button = next_button.subsample(2,2) #reduced size of image
         prev_button = PhotoImage(file='assets/prev.png')
         prev_button = prev_button.subsample(2,2)
         stop_button = PhotoImage(file='assets/stop.png')
         stop_button = stop_button.subsample(2,2)
         pause_button = PhotoImage(file='assets/pause.png')
         pause_button = pause_button.subsample(2,2)
-        mycanvas.create_image(1090,70,image=pause_button,anchor='e')
+        pause_button_label = tk.Label(image=pause_button,bg="#333338")
+        prev_button_label = tk.Label(image=prev_button,bg="#333338")
+        next_button_label = tk.Label(image=next_button,bg="#333338")
+        stop_button_label = tk.Label(image=stop_button,bg="#333338")
+        stop_button_label.pack()
+        prev_button_label.pack()
+        next_button_label.pack()
+        pause_button_label.pack()
+        pause_button_label.bind('<Button-1>',pyplayer.pause)
+        stop_button_label.bind('<Button-1>',pyplayer.stop)
+        prev_button_label.bind('<Button-1>',pyplayer.prev)
+        next_button_label.bind('<Button-1>',pyplayer.next)
 
-        mycanvas.create_image(850,70,image=stop_button,anchor='e')
-        mycanvas.create_image(990,70,image=prev_button,anchor='e')
-        mycanvas.create_image(1190,70,image=next_button,anchor='e')
+        #co-ordinates for buttons  change here
+        mycanvas.create_window(1090,70,window=pause_button_label,anchor='e')
+        mycanvas.create_window(850,70,window=stop_button_label,anchor='e')
+        mycanvas.create_window(990,70,window=prev_button_label,anchor='e')
+        mycanvas.create_window(1190,70,window=next_button_label,anchor='e')
         # TODO: add control buttons int the canvas
         window.mainloop()
         return window
