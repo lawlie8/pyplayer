@@ -11,6 +11,27 @@ except:
 import time
 import datetime
 
+class menu_class(object):
+    """docstring formenu_class."""
+
+    def __init__(self, arg):
+        pass
+
+    def destroy_menu():
+        menu_window.destroy()
+        pyplayer.destroy_window()
+
+    def open_menu(arg):
+        global menu_window
+        menu_window = tk.Tk()
+        menu_window.tk.call('tk', 'scaling', 2.0)
+        menu_window.geometry("720x720")
+        menu_window.title("Menu")
+        menu_window.configure(bg='#333338')
+        menu_window.iconbitmap('assets/py_icon.ico')
+        menu_window.mainloop()
+        pass
+
 
 
 class pyplayer(object):
@@ -27,6 +48,9 @@ class pyplayer(object):
             check_file = open('.pyplayerdata/config.pyplayer','w+')
             check_file.write('global_playlist\n'+data)
         pass
+
+    def destroy_window():
+        window.destroy()
 
     def check_for_global_playlist(arg):
         check_file = open('.pyplayerdata/config.pyplayer')
@@ -110,6 +134,7 @@ class pyplayer(object):
 
     def fname(arg):
         ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        global window
         window = tk.Tk()
         window.tk.call('tk', 'scaling', 2.0)
         window.geometry("1224x720")
@@ -117,6 +142,8 @@ class pyplayer(object):
         window.configure(bg='#333338')
         window.iconbitmap('assets/py_icon.ico')
         global mycanvas#play_button_label,pause_button_label,
+
+        window.protocol('WM_DELETE_WINDOW',menu_class.destroy_menu)
 
         mycanvas = tk.Canvas(window,bg="#7f7278",height=150,bd='0',highlightthickness=0)
         mycanvas.pack(anchor='w',fill='x')
@@ -130,12 +157,15 @@ class pyplayer(object):
         pause_button = pause_button.subsample(2,2)
         play_button = PhotoImage(file='assets/play.png')
         play_button = play_button.subsample(2,2)
+        menu_button = PhotoImage(file='assets/menu.png')
+        menu_button_label = tk.Label(image=menu_button,bg="#7f7278")
+
         play_button_label = tk.Label(image=play_button,bg="#7f7278")
         pause_button_label = tk.Label(image=pause_button,bg="#7f7278")
         prev_button_label = tk.Label(image=prev_button,bg="#7f7278")
         next_button_label = tk.Label(image=next_button,bg="#7f7278")
         stop_button_label = tk.Label(image=stop_button,bg="#7f7278")
-        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[play_button_label,pyplayer.play_songs]] #,[pause_button_label,pyplayer.pause]
+        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[play_button_label,pyplayer.play_songs],[menu_button_label,menu_class.open_menu]] #,[pause_button_label,pyplayer.pause]
         vol_var = tk.DoubleVar()
         vol = tk.Scale(mycanvas,variable=vol_var,command=pyplayer.get_volume,troughcolor='#7f7278',width='10',from_=0,to=100,bg='#7f7278',resolution=1,orient='horizontal',length=100,bd=0,showvalue=False,sliderlength=30)
         vol.pack(anchor='se',side='bottom',pady=70,padx=10)
@@ -144,6 +174,8 @@ class pyplayer(object):
             i[0].bind('<Button-1>',i[1])
 
         #co-ordinates for buttons  change here
+        mycanvas.create_window(15,15,window=menu_button_label,anchor='c')
+
         mycanvas.create_window(300,70,window=play_button_label,anchor='c')
         mycanvas.create_window(100,70,window=stop_button_label,anchor='c')
         mycanvas.create_window(200,70,window=prev_button_label,anchor='c')
