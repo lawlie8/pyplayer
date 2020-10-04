@@ -63,6 +63,19 @@ class pyplayer(object):
     def stop(arg):
         current_song = r'C:\Users\Lawlie8\Downloads\Music\gotta_friend_in_me.mp3'
         media_palyer.stop()
+        play_button = PhotoImage(file='assets/play.png')
+        play_button = play_button.subsample(2,2)
+        play_button_label = tk.Label(image=play_button,bg="#7f7278")
+        play_button_label.pack()
+        mycanvas.create_window(300,70,window=play_button_label,anchor='c')
+        play_button_label.bind('<Button-1>',pyplayer.play_songs)
+        try:
+            mycanvas.update('pause_button_label')
+        except:
+            mycanvas.update('play_button_label')
+        finally:
+            print('pause')
+
         print('stop')
 
 
