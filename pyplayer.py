@@ -4,7 +4,10 @@ import tkinter as tk
 from tkinter import *
 import os
 import sys
-import vlc
+try:
+    import vlc
+except:
+    os.system('pip install python-vlc')
 import time
 import datetime
 
