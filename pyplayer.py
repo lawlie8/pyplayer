@@ -27,22 +27,32 @@ class pyplayer(object):
     def check_for_global_playlist(arg):
         check_file = open('.pyplayerdata/config.pyplayer')
         return check_file.readlines()[0]
+    def __init__(self):
+        current_song = r'C:\Users\Lawlie8\Downloads\Music\gotta_friend_in_me.mp3'
+        global media_palyer
+        media_palyer= vlc.MediaPlayer(current_song)
 
     def play_songs(arg):
-        global media_palyer
-        media_palyer = vlc.MediaPlayer()
-        media = vlc.Media(r'C:\Users\Lawlie8\Downloads\Music\gotta_friend_in_me.mp3')
-        media_palyer.set_media(media)
-        media_palyer.audio_set_volume(70)
+        media_palyer.audio_set_volume(100)
         media_palyer.play()
-        return media_palyer
+        
 
-    def get_volume(media_palyer):
-        media_palyer = vlc.MediaPlayer()
-        media_palyer.audio_set_volume(70)
-        media_palyer.play()
+    def get_volume(arg):
+        #media_palyer.audio_set_volume(arg)
+        #media_palyer.play()
+        print(arg)
 
     def stop(arg):
+        current_song = r'C:\Users\Lawlie8\Downloads\Music\gotta_friend_in_me.mp3'
+        media_palyer.stop()
+        '''
+        #media_palyer = vlc.MediaPlayer()
+        media = vlc.Media(current_song)
+        media_palyer.set_media(media)
+        media_palyer.audio_set_volume(70)
+        media_palyer.stop()
+
+        '''
         print('stop')
 
 
@@ -54,8 +64,8 @@ class pyplayer(object):
         print('prev')
 
 
-    def pause(arg):
-        pyplayer.play_songs(arg)
+    def pause():
+        #pyplayer.play_songs()
         print('pause')
 
     #def get_volume(arg):
@@ -83,7 +93,7 @@ class pyplayer(object):
         prev_button_label = tk.Label(image=prev_button,bg="#7f7278")
         next_button_label = tk.Label(image=next_button,bg="#7f7278")
         stop_button_label = tk.Label(image=stop_button,bg="#7f7278")
-        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[pause_button_label,pyplayer.pause]]
+        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[pause_button_label,pyplayer.play_songs]]
         vol_var = tk.DoubleVar()
         vol = tk.Scale(mycanvas,variable=vol_var,command=pyplayer.get_volume,troughcolor='#7f7278',width='10',from_=0,to=100,bg='#7f7278',resolution=1,orient='horizontal',length=100,bd=0,showvalue=False,sliderlength=30)
         vol.pack(anchor='se',side='bottom',pady=70,padx=10)
