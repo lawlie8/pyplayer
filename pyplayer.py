@@ -26,6 +26,18 @@ class menu_class(object):
             pass
 
 
+    def refresh_playlist_window():
+        print('refresh')
+        pass
+
+
+
+    def add_dirs_function():
+        print('add dirs code here')
+        pass
+
+
+
     def open_menu(arg):
         global menu_window
         menu_window = tk.Tk()
@@ -36,7 +48,6 @@ class menu_class(object):
         menu_window.iconbitmap('assets/py_icon.ico')
         mylist = Listbox(menu_window,width='90',height='7',bg='white',bd=0,fg='black')#yscrollcommand=enc_file_scroll.set,
         mylist.insert(END,"    +++ Monitoring following dir's +++     ",' ')
-
         fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
         #print(fm.read())
         x = fm.read().split('\n')
@@ -45,6 +56,10 @@ class menu_class(object):
         search_files = tk.Label(menu_window,fg='white',text="Monitoring dir's",bg='#333338')
         search_files.pack(padx=20,pady=50,anchor='w')
         mylist.pack(pady=0,anchor='w',padx=50,fill='x')
+        refresh_button = tk.Button(menu_window,text='Refresh',activebackground='black',highlightcolor='black',bd=1,relief='flat',height=0,width=10,fg='white',bg='#338237',command=lambda :menu_class.refresh_playlist_window())
+        add_dirs_button = tk.Button(menu_window,text='Add dirs',activebackground='black',highlightcolor='black',bd=1,relief='flat',height=0,width=10,fg='white',bg='#338237',command=lambda :menu_class.add_dirs_function())
+        add_dirs_button.place(x=50,y=300)
+        refresh_button.place(x=150,y=300)
         menu_window.mainloop()
         pass
 
