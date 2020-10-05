@@ -18,8 +18,13 @@ class menu_class(object):
         pass
 
     def destroy_menu():
-        menu_window.destroy()
-        pyplayer.destroy_window()
+        try:
+            menu_window.destroy()
+            pyplayer.destroy_window()
+        except:
+            pyplayer.destroy_window()
+            pass
+
 
     def open_menu(arg):
         global menu_window
@@ -29,6 +34,17 @@ class menu_class(object):
         menu_window.title("Menu")
         menu_window.configure(bg='#333338')
         menu_window.iconbitmap('assets/py_icon.ico')
+        mylist = Listbox(menu_window,width='90',height='7',bg='white',bd=0,fg='black')#yscrollcommand=enc_file_scroll.set,
+        mylist.insert(END,"    +++ Monitoring following dir's +++     ",' ')
+
+        fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
+        #print(fm.read())
+        x = fm.read().split('\n')
+        for i in x:
+            mylist.insert(END,'      '+i)
+        search_files = tk.Label(menu_window,fg='white',text="Monitoring dir's",bg='#333338')
+        search_files.pack(padx=20,pady=50,anchor='w')
+        mylist.pack(pady=0,anchor='w',padx=50,fill='x')
         menu_window.mainloop()
         pass
 
@@ -38,6 +54,11 @@ class pyplayer(object):
     """docstring forpyplayer."""
     def initilise(arg):
         os.system('mkdir .pyplayerdata')
+        if os.path.isfile('.pyplayerdata/file_monitoring.pyplayer'):
+            pass
+        else:
+            fm = open('.pyplayerdata/file_monitoring.pyplayer','a+')
+            fm.close()
         if os.path.isfile('.pyplayerdata/config.pyplayer'):
             check_file = open('config.pyplayer','w+')
             data = {"version":"1.0","platform":sys.platform,"author":"lawlie8","last_modified":str(datetime.date.today())+"/"+time.strftime("%H:%M:%S",time.localtime())}
