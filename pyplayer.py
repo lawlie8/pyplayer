@@ -27,13 +27,35 @@ class menu_class(object):
 
 
     def refresh_playlist_window():
-        print('refresh')
+        import glob
+        fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
+        global_playlist = open('.pyplayerdata/global_playlist.pyplayer','a+')
+
+        x = fm.read().split('\n')
+        for i in x:
+            if i!='':
+                files = glob.glob(i + '/**/*.mp3', recursive=True)
+        for i in files:
+            #sprint(i)
+            try:
+                global_playlist.write(str(i+'\n'))
+            except:
+                pass
+        global_playlist.close()
+        #print(len(files))
         pass
 
 
 
     def add_dirs_function():
-        print('add dirs code here')
+        from tkinter import filedialog
+        enc_file_list = []
+        window_filename =  filedialog.askdirectory(initialdir = "/",title = "Select file")
+        enc_file_list.append(window_filename)
+        dir_files = open(".pyplayerdata/file_monitoring.pyplayer",'a+')
+        for dir_list in enc_file_list:
+            dir_files.write(dir_list+'\n')
+        dir_files.close()
         pass
 
 
