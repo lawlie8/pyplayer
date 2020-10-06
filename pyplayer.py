@@ -3,6 +3,8 @@ import ctypes
 import tkinter as tk
 from tkinter import *
 import os
+from eyed3 import id3
+
 import sys
 try:
     import vlc
@@ -112,6 +114,7 @@ class pyplayer(object):
         return check_file.readlines()[0]
 
     def __init__(self):
+        instance = open('.pyplayerdata/in.txt','w+').write('on')
         print('ss')
         #current_song = r'C:/Users/Lawlie8/Downloads\Music\Santara - Suki.mp3'
 
@@ -185,8 +188,8 @@ class pyplayer(object):
 
     def CurSelect(arg):
         global media_palyer
-        media_palyer= vlc.MediaPlayer()
-        media_palyer.stop()
+
+
         value=str(current_mylist.get(current_mylist.curselection())).strip('\n').strip(' ')
         list_file = open('.pyplayerdata/config.pyplayer','r+')
         current_playlist = str(list_file.readlines()[0]).strip('\n')
@@ -194,20 +197,47 @@ class pyplayer(object):
         for song,ind in zip(song_list,range(0,len(song_list))):
             if(song.split('\\')[-1].strip('\n')==value):
                 to_play = song_list[ind].strip('\n')
-        media_palyer= vlc.MediaPlayer(to_play)
-        media_palyer.play()
+
+        try:#kill me please some one just kill me this sucks i shud have read documentation
+            if(open('.pyplayerdata/in.txt','r+').read() == 'on'):
+                media_palyer= vlc.MediaPlayer(to_play)
+                media_palyer.play()
+            else:
+                media_palyer.stop()
+                media_palyer= vlc.MediaPlayer(to_play)
+                media_palyer.play()
+            print('s')
+
+        except:
+            pass
+
+        instance = open('.pyplayerdata/in.txt','w+').write('off')
+        #instance.close()
         try:
             mycanvas.delete('label')
         except:
             pass
+        #instance_a = open('.pyplayerdata/instance.pyplayer','w+').write('on').close()
+        tag = id3.Tag()
+        tag.parse(to_play)
+        artist_value = tag.artist
+        album_value = tag.album
+        song_value = tag.title
+        #print("song title"+str(song_value))
+        if str(tag.title) == 'None':
+            song_value = value[0:55]
 
-        song_name_label = tk.Label(mycanvas,text=value,bg='#7f7278',fg='white')
+        song_name_label = tk.Label(mycanvas,text=song_value,bg='#7f7278',fg='white')
         song_name_label.pack()
-        song_artist_label = tk.Label(mycanvas,text=value,bg='#7f7278',fg='white')
+        song_artist_label = tk.Label(mycanvas,text=artist_value,bg='#7f7278',fg='white')
         song_artist_label.pack()
+        song_album_label = tk.Label(mycanvas,text=album_value,bg='#7f7278',fg='white')
+        song_album_label.pack()
+
         #add mutagen or id3 code to get song artist
         mycanvas.create_window(500,40,tags=('label',),window=song_name_label,anchor='w')
-        mycanvas.create_window(500,40,tags=('label',),window=song_artist_label,anchor='w')
+        mycanvas.create_window(500,65,tags=('label',),window=song_artist_label,anchor='w')
+        mycanvas.create_window(500,90,tags=('label',),window=song_album_label,anchor='w')
 
         try:
             mycanvas.update('song_name_label')
@@ -253,8 +283,8 @@ class pyplayer(object):
         stop_button_label = tk.Label(image=stop_button,bg="#7f7278")
         ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[play_button_label,pyplayer.play_songs],[menu_button_label,menu_class.open_menu]] #,[pause_button_label,pyplayer.pause]
         vol_var = tk.DoubleVar()
-        vol = tk.Scale(mycanvas,variable=vol_var,command=pyplayer.get_volume,troughcolor='#7f7278',width='10',from_=0,to=100,bg='#7f7278',resolution=1,orient='horizontal',length=100,bd=0,showvalue=False,sliderlength=30)
-        vol.pack(anchor='se',side='bottom',pady=70,padx=10)
+        #vol = tk.Scale(mycanvas,variable=vol_var,command=pyplayer.get_volume,troughcolor='#7f7278',width='10',from_=0,to=100,bg='#7f7278',resolution=1,orient='horizontal',length=100,bd=0,showvalue=False,sliderlength=30)
+        #vol.pack(anchor='se',side='bottom',pady=70,padx=10)
         for i in ll:
             i[0].pack()
             i[0].bind('<Button-1>',i[1])
@@ -273,7 +303,7 @@ class pyplayer(object):
         global current_mylist
 
         list_file_box = open('.pyplayerdata/'+current_playlist+'.pyplayer','r+')
-        current_mylist = Listbox(window,height='100',bg='#333338',bd=0,fg='white',highlightthickness=1)#yscrollcommand=enc_file_scroll.set,
+        current_mylist = Listbox(window,height='100',bg='#333338',bd=0,fg='white',highlightthickness=1,activestyle='none')#yscrollcommand=enc_file_scroll.set,
         for i in list_file_box.readlines():
             i = i.split('\\')[-1]
             current_mylist.insert(END,'     '+i)
