@@ -112,9 +112,8 @@ class pyplayer(object):
         return check_file.readlines()[0]
 
     def __init__(self):
-        current_song = r'C:\Users\Lawlie8\Downloads\Music\gotta_friend_in_me.mp3'
-        global media_palyer
-        media_palyer= vlc.MediaPlayer(current_song)
+        print('ss')
+        #current_song = r'C:/Users/Lawlie8/Downloads\Music\Santara - Suki.mp3'
 
     def play_songs(arg):
         media_palyer.audio_set_volume(100)
@@ -166,6 +165,7 @@ class pyplayer(object):
 
 
     def pause(arg):
+
         media_palyer.pause()
         #pause_button_label.pack_forget()
         play_button = PhotoImage(file='assets/play.png')
@@ -183,6 +183,21 @@ class pyplayer(object):
             print('pause')
 
 
+    def CurSelect(arg):
+        global media_palyer
+        media_palyer= vlc.MediaPlayer()
+        media_palyer.stop()
+        value=str(current_mylist.get(current_mylist.curselection())).strip('\n').strip(' ')
+        list_file = open('.pyplayerdata/config.pyplayer','r+')
+        current_playlist = str(list_file.readlines()[0]).strip('\n')
+        song_list = open('.pyplayerdata/'+current_playlist+'.pyplayer','r+').readlines()
+        for song,ind in zip(song_list,range(0,len(song_list))):
+            if(song.split('\\')[-1].strip('\n')==value):
+                to_play = song_list[ind].strip('\n')
+        media_palyer= vlc.MediaPlayer(to_play)
+        media_palyer.play()
+        pyplayer.play_songs(arg)
+        pass
     #def get_volume(arg):
     #    print(arg)
 
@@ -238,11 +253,15 @@ class pyplayer(object):
         list_file = open('.pyplayerdata/config.pyplayer','r+')
         current_playlist = str(list_file.readlines()[0]).strip('\n')
         list_file.close()
+        global current_mylist
+
         list_file_box = open('.pyplayerdata/'+current_playlist+'.pyplayer','r+')
         current_mylist = Listbox(window,height='100',bg='#333338',bd=0,fg='white',highlightthickness=1)#yscrollcommand=enc_file_scroll.set,
         for i in list_file_box.readlines():
+            i = i.split('\\')[-1]
             current_mylist.insert(END,'     '+i)
-        current_mylist.pack(pady=100,fill='both',side='top')
+        current_mylist.bind('<<ListboxSelect>>',pyplayer.CurSelect)
+        current_mylist.pack(pady=0,fill='both',side='top')
         window.mainloop()
         return play_button_label,pause_button_label
 
