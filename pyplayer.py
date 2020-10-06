@@ -196,6 +196,23 @@ class pyplayer(object):
                 to_play = song_list[ind].strip('\n')
         media_palyer= vlc.MediaPlayer(to_play)
         media_palyer.play()
+        try:
+            mycanvas.delete('label')
+        except:
+            pass
+
+        song_name_label = tk.Label(mycanvas,text=value,bg='#7f7278',fg='white')
+        song_name_label.pack()
+        song_artist_label = tk.Label(mycanvas,text=value,bg='#7f7278',fg='white')
+        song_artist_label.pack()
+        #add mutagen or id3 code to get song artist
+        mycanvas.create_window(500,40,tags=('label',),window=song_name_label,anchor='w')
+        mycanvas.create_window(500,40,tags=('label',),window=song_artist_label,anchor='w')
+
+        try:
+            mycanvas.update('song_name_label')
+        except:
+            pass
         pyplayer.play_songs(arg)
         pass
     #def get_volume(arg):
