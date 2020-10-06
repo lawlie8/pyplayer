@@ -30,19 +30,16 @@ class menu_class(object):
         import glob
         fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
         global_playlist = open('.pyplayerdata/global_playlist.pyplayer','a+')
-
         x = fm.read().split('\n')
         for i in x:
             if i!='':
                 files = glob.glob(i + '/**/*.mp3', recursive=True)
         for i in files:
-            #sprint(i)
             try:
                 global_playlist.write(str(i+'\n'))
             except:
                 pass
         global_playlist.close()
-        #print(len(files))
         pass
 
 
@@ -143,7 +140,6 @@ class pyplayer(object):
         print(arg)
 
     def stop(arg):
-        current_song = r'C:\Users\Lawlie8\Downloads\Music\gotta_friend_in_me.mp3'
         media_palyer.stop()
         play_button = PhotoImage(file='assets/play.png')
         play_button = play_button.subsample(2,2)
@@ -239,7 +235,14 @@ class pyplayer(object):
         mycanvas.create_window(200,70,window=prev_button_label,anchor='c')
         mycanvas.create_window(400,70,window=next_button_label,anchor='c')
         # TODO: add control buttons int the canvas
-
+        list_file = open('.pyplayerdata/config.pyplayer','r+')
+        current_playlist = str(list_file.readlines()[0]).strip('\n')
+        list_file.close()
+        list_file_box = open('.pyplayerdata/'+current_playlist+'.pyplayer','r+')
+        current_mylist = Listbox(window,height='100',bg='#333338',bd=0,fg='white',highlightthickness=1)#yscrollcommand=enc_file_scroll.set,
+        for i in list_file_box.readlines():
+            current_mylist.insert(END,'     '+i)
+        current_mylist.pack(pady=100,fill='both',side='top')
         window.mainloop()
         return play_button_label,pause_button_label
 
