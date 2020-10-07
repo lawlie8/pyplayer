@@ -73,7 +73,8 @@ class menu_class(object):
         #print(fm.read())
         x = fm.read().split('\n')
         for i in x:
-            mylist.insert(END,'      '+i)
+            if i != '':
+                mylist.insert(END,'      '+i)
         search_files = tk.Label(menu_window,fg='white',text="Monitoring dir's",bg='#333338')
         search_files.pack(padx=20,pady=50,anchor='w')
         mylist.pack(pady=0,anchor='w',padx=50,fill='x')
