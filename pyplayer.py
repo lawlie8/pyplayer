@@ -90,6 +90,10 @@ class menu_class(object):
 
 class pyplayer(object):
     """docstring forpyplayer."""
+    def shuffle_list(): #shuffle the list from here come up with a algorithm shit Head
+        global_playlist = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()
+
+
     def initilise(arg):
         os.system('mkdir .pyplayerdata')
         if os.path.isfile('.pyplayerdata/file_monitoring.pyplayer'):
