@@ -4,8 +4,9 @@ import tkinter as tk
 from tkinter import *
 import os
 from eyed3 import id3
-
+import hashlib
 import sys
+from PIL import ImageTk, Image
 try:
     import vlc
 except:
@@ -229,7 +230,23 @@ class pyplayer(object):
         artist_value = tag.artist
         album_value = tag.album
         song_value = tag.title
-        #print("song title"+str(song_value))
+        try:
+            sha1 = hashlib.sha1()
+            BUF_SIZE = 65536
+            with open(to_play, 'rb') as f:
+                while True:
+                    data = f.read(BUF_SIZE)
+                    if not data:
+                        break
+                    sha1.update(data)
+
+            for image in tag.images:
+                image_file = open('.album-art/'+sha1.hexdigest()+'.png','wb')
+                image_file.write(image.image_data)
+                image_file.close()
+        except:
+            pass
+        #print("song title"+str(tag.images))
         if str(tag.title) == 'None':
             song_value = value[0:55]
 
@@ -239,11 +256,37 @@ class pyplayer(object):
         song_artist_label.pack()
         song_album_label = tk.Label(mycanvas,text=album_value,bg='#7f7278',fg='white')
         song_album_label.pack()
+        try:
+        #print(str(value+'.png'))
+
+            basewidth = 120
+            img = Image.open(str('.album-art/'+sha1.hexdigest()+'.png'))
+            wpercent = (basewidth/float(img.size[0]))
+            hsize = int((float(img.size[1])*float(wpercent)))
+            img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+            img.save(str('.album-art/'+sha1.hexdigest()+'.png'))
+            img = ImageTk.PhotoImage(Image.open(str('.album-art/'+sha1.hexdigest()+'.png')))
+            #img = img.resize((200,200),Image.ANTIALIAS)
+            mycanvas.create_image(450,70,image=img,anchor='w')
+        except Exception as e:
+            print(e)
+            pass
+
+        #art_button = PhotoImage(file=str(sha1.hexdigest()+'.png'))
+        #art_button = art_button.sample(2,2)
+        #art_button_label = tk.Label(image=art_button,bg="#7f7278")
+        #art_button_label.pack()
+
+
+
+
+
+
 
         #add mutagen or id3 code to get song artist
-        mycanvas.create_window(500,40,tags=('label',),window=song_name_label,anchor='w')
-        mycanvas.create_window(500,65,tags=('label',),window=song_artist_label,anchor='w')
-        mycanvas.create_window(500,90,tags=('label',),window=song_album_label,anchor='w')
+        mycanvas.create_window(600,40,tags=('label',),window=song_name_label,anchor='w')
+        mycanvas.create_window(600,70,tags=('label',),window=song_artist_label,anchor='w')
+        mycanvas.create_window(600,100,tags=('label',),window=song_album_label,anchor='w')
 
         try:
             mycanvas.update('song_name_label')
@@ -310,6 +353,7 @@ class pyplayer(object):
 
         list_file_box = open('.pyplayerdata/'+current_playlist+'.pyplayer','r+')
         current_mylist = Listbox(window,height='100',bg='#333338',bd=0,fg='white',highlightthickness=1,activestyle='none')#yscrollcommand=enc_file_scroll.set,
+
         for i in list_file_box.readlines():
             i = i.split('\\')[-1]
             current_mylist.insert(END,'     '+i)
