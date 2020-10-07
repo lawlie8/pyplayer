@@ -128,7 +128,8 @@ class pyplayer(object):
         pause_button_label.pack()
         mycanvas.create_window(300,70,window=pause_button_label,anchor='c')
         pause_button_label.bind('<Button-1>',pyplayer.pause)
-        pause_button_label.bind('<space>',pyplayer.pause)
+
+
         #Ignore all errors for the following code, it works
 
         try:
@@ -137,6 +138,8 @@ class pyplayer(object):
             mycanvas.update('play_button_label')
         finally:
             print('play')
+            #img change doesn't work
+            window.bind('<Return>',pyplayer.pause)
 
     def get_volume(arg):
         print(arg)
@@ -178,12 +181,14 @@ class pyplayer(object):
         mycanvas.create_window(300,70,window=play_button_label,anchor='c')
         play_button_label.bind('<Button-1>',pyplayer.play_songs)
         #Ignore all errors for the following code,it works
+
         try:
             mycanvas.update('pause_button_label')
         except:
             mycanvas.update('play_button_label')
         finally:
             print('pause')
+            window.bind('<Return>',pyplayer.play_songs)
 
 
     def CurSelect(arg):
