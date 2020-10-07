@@ -182,6 +182,8 @@ class pyplayer(object):
         play_button_label.pack()
         mycanvas.create_window(300,70,window=play_button_label,anchor='c')
         play_button_label.bind('<Button-1>',pyplayer.play_songs)
+        mycanvas.create_image(460,75,image=img,anchor='w')
+
         #Ignore all errors for the following code,it works
 
         try:
@@ -260,6 +262,7 @@ class pyplayer(object):
         #print(str(value+'.png'))
 
             basewidth = 120
+            global img
             img = Image.open(str('.album-art/'+sha1.hexdigest()+'.png'))
             wpercent = (basewidth/float(img.size[0]))
             hsize = int((float(img.size[1])*float(wpercent)))
@@ -267,7 +270,7 @@ class pyplayer(object):
             img.save(str('.album-art/'+sha1.hexdigest()+'.png'))
             img = ImageTk.PhotoImage(Image.open(str('.album-art/'+sha1.hexdigest()+'.png')))
             #img = img.resize((200,200),Image.ANTIALIAS)
-            mycanvas.create_image(450,70,image=img,anchor='w')
+            mycanvas.create_image(460,75,image=img,anchor='w')
         except Exception as e:
             print(e)
             pass
