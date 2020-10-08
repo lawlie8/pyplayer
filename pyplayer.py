@@ -92,6 +92,36 @@ class menu_class(object):
 
 class pyplayer(object):
     """docstring forpyplayer."""
+    def search(arg):
+
+        var_find = 0
+        search_list = open('.pyplayerdata/search_playlist.pyplayer','w+')
+        global_playlist = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()
+        current_mylist.delete(0,'end')
+
+        if open('.pyplayerdata/s.flag','r+').readlines()[0] != '1':
+            search_entry.delete(0,'end')
+            search_flag_file = open('.pyplayerdata/s.flag','w+').write('1')
+        if search_flag == 1:
+            x = search_entry.get()
+            if len(x)>3:
+                for i in global_playlist:
+                    if x.lower() in i.lower():
+                        var_find = 1
+                        search_list.write(i)
+                        i = i.split('\\')[-1]
+                        if i not in open('.pyplayerdata/search_playlist.pyplayer','r+').readlines():
+                            current_mylist.insert(END,'     '+i)
+
+        if x!='':
+            if var_find !=1:
+                current_mylist.delete(0,'end')
+        else:
+            for i in global_playlist:
+                i = i.split('\\')[-1]
+                current_mylist.insert(END,'     '+i)
+
+        #print(x)
 
     def shuffle_list(arg): #shuffle the list from here come up with a algorithm shit Head
         global_playlist = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()
@@ -145,7 +175,9 @@ class pyplayer(object):
         return check_file.readlines()[0]
 
     def __init__(self):
+        global search_flag
         instance = open('.pyplayerdata/in.txt','w+').write('on')
+        search_flag = open('.pyplayerdata/s.flag','w+').write('0')
         print('ss')
         #current_song = r'C:/Users/Lawlie8/Downloads\Music\Santara - Suki.mp3'
 
@@ -170,7 +202,7 @@ class pyplayer(object):
         finally:
             print('play')
             #img change doesn't work
-            window.bind('<space>',pyplayer.pause)
+            current_mylist.bind('<space>',pyplayer.pause)
 
     def get_volume(arg):
         print(arg)
@@ -221,7 +253,7 @@ class pyplayer(object):
             mycanvas.update('play_button_label')
         finally:
             print('pause')
-            window.bind('<space>',pyplayer.play_songs)
+            current_mylist.bind('<space>',pyplayer.play_songs)
 
 
     def CurSelect(arg):
@@ -406,7 +438,7 @@ class pyplayer(object):
         global current_mylist
 
         list_file_box = open('.pyplayerdata/'+current_playlist+'.pyplayer','r+')
-        current_mylist = Listbox(window,height='100',bg='#333338',bd=0,fg='white',highlightthickness=1,activestyle='none')#yscrollcommand=enc_file_scroll.set,
+        current_mylist = Listbox(window,height='100',bg='#333338',bd=0,fg='white',highlightthickness=0,activestyle='none')#yscrollcommand=enc_file_scroll.set,
 
         for i in list_file_box.readlines():
             i = i.split('\\')[-1]
@@ -414,12 +446,23 @@ class pyplayer(object):
         current_mylist.bind('<Double-1>',pyplayer.CurSelect)
         current_mylist.bind('<Return>',pyplayer.CurSelect)
         window.bind_all('<Control-Key-s>',pyplayer.shuffle_list)
-
         #current_mylist.bind('<<ListboxSelect>>',pyplayer.CurSelect)
-        current_mylist.pack(pady=0,fill='both',side='top')
-        window.mainloop()
-        return play_button_label,pause_button_label
+        global search_entry
+        search_entry = tk.Entry(master=window,width=100,fg='black',bg='#e6e6e6',bd=0,highlightthickness=0)
+        search_entry.pack(fill='x',ipady=5)
+        search_entry.insert(0,'   Search')
+        search_entry.bind('<Button-1>',pyplayer.search)
+        search_entry.bind('<Key>',pyplayer.search)
+        search_entry.bind('<Escape>',pyplayer.change_focus)
 
+        current_mylist.pack(pady=0,fill='both',side='top')
+
+
+        window.mainloop()
+
+        return play_button_label,pause_button_label
+    def change_focus(arg):
+        current_mylist.focus()
 
 
 k = pyplayer()
