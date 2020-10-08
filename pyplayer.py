@@ -120,7 +120,9 @@ class pyplayer(object):
             for i in global_playlist:
                 i = i.split('\\')[-1]
                 current_mylist.insert(END,'     '+i)
-
+            #search_entry.insert(0,'  Search')
+        #global_playlist.close()
+        #search_flag_file.close()
         #print(x)
 
     def shuffle_list(arg): #shuffle the list from here come up with a algorithm shit Head
@@ -145,7 +147,8 @@ class pyplayer(object):
         current_mylist.select_set(0)
         current_mylist.focus()
         pyplayer.CurSelect(shuffle_list_list[0])
-
+        global_playlist.close()
+        sl.close()
     def repeat_list(arg):
         print('repeaet')
 
@@ -243,8 +246,10 @@ class pyplayer(object):
         play_button_label.pack()
         mycanvas.create_window(300,70,window=play_button_label,anchor='c')
         play_button_label.bind('<Button-1>',pyplayer.play_songs)
-        mycanvas.create_image(460,75,image=img,anchor='w')
-
+        try:
+            mycanvas.create_image(460,75,image=img,anchor='w')
+        except:
+            pass
         #Ignore all errors for the following code,it works
 
         try:
@@ -456,6 +461,11 @@ class pyplayer(object):
         search_entry.bind('<Escape>',pyplayer.change_focus)
 
         current_mylist.pack(pady=0,fill='both',side='top')
+        #default_album_button = PhotoImage(file='assets/default.png')
+        #default_album_button = default_album_button.subsample(2,2)
+        #default_album_label = tk.Label(image=default_album_button,bg="#7f7278")
+        #default_album_label.pack()
+        #mycanvas.create_window(460,70,window=default_album_label,anchor='w')
 
 
         window.mainloop()
