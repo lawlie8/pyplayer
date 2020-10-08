@@ -112,7 +112,9 @@ class pyplayer(object):
             i = i.split('\\')[-1]
             current_mylist.insert(END,'     '+i)
         current_mylist.pack(pady=0,fill='both',side='top')
-
+        current_mylist.select_set(0)
+        current_mylist.focus()
+        pyplayer.CurSelect(shuffle_list_list[0])
 
     def repeat_list(arg):
         print('repeaet')
@@ -411,6 +413,7 @@ class pyplayer(object):
             current_mylist.insert(END,'     '+i)
         current_mylist.bind('<Double-1>',pyplayer.CurSelect)
         current_mylist.bind('<Return>',pyplayer.CurSelect)
+        window.bind_all('<Control-Key-s>',pyplayer.shuffle_list)
 
         #current_mylist.bind('<<ListboxSelect>>',pyplayer.CurSelect)
         current_mylist.pack(pady=0,fill='both',side='top')
