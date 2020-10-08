@@ -7,6 +7,7 @@ from eyed3 import id3
 import hashlib
 import sys
 from PIL import ImageTk, Image
+import random
 try:
     import vlc
 except:
@@ -90,9 +91,12 @@ class menu_class(object):
 
 class pyplayer(object):
     """docstring forpyplayer."""
-    def shuffle_list(): #shuffle the list from here come up with a algorithm shit Head
-        global_playlist = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()
-
+    def shuffle_list(arg): #shuffle the list from here come up with a algorithm shit Head
+        print('shuffle')
+        #global_playlist = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()
+        #for i in range(0,len(global_playlist)):
+    def repeat_list(arg):
+        print('repeaet')
 
     def initilise(arg):
         os.system('mkdir .pyplayerdata')
@@ -145,7 +149,7 @@ class pyplayer(object):
         finally:
             print('play')
             #img change doesn't work
-            window.bind('<Return>',pyplayer.pause)
+            window.bind('<space>',pyplayer.pause)
 
     def get_volume(arg):
         print(arg)
@@ -196,7 +200,7 @@ class pyplayer(object):
             mycanvas.update('play_button_label')
         finally:
             print('pause')
-            window.bind('<Return>',pyplayer.play_songs)
+            window.bind('<space>',pyplayer.play_songs)
 
 
     def CurSelect(arg):
@@ -282,7 +286,7 @@ class pyplayer(object):
             default_album_label.pack()
             mycanvas.create_window(460,70,window=default_album_label,anchor='w')
             '''
-            print('awwwwwwwaofihcanluktabckeshgcabjkhgcfabjshgcfbajkhfcgb'+str(e))
+            #print('awwwwwwwaofihcanluktabckeshgcabjkhgcfabjshgcfbajkhfcgb'+str(e))
             pass
 
         #art_button = PhotoImage(file=str(sha1.hexdigest()+'.png'))
@@ -338,12 +342,22 @@ class pyplayer(object):
         menu_button = PhotoImage(file='assets/menu.png')
         menu_button_label = tk.Label(image=menu_button,bg="#7f7278")
 
+        shuffle_button = PhotoImage(file='assets/shuffle.png')
+        shuffle_button = shuffle_button.subsample(4,4)
+        shuffle_button_label = tk.Label(image=shuffle_button,bg="#7f7278")
+
+        repeat_button = PhotoImage(file='assets/repeat.png')
+        repeat_button = repeat_button.subsample(4,4)
+        repeat_button_label = tk.Label(image=repeat_button,bg="#7f7278")
+
+
+
         play_button_label = tk.Label(image=play_button,bg="#7f7278")
         pause_button_label = tk.Label(image=pause_button,bg="#7f7278")
         prev_button_label = tk.Label(image=prev_button,bg="#7f7278")
         next_button_label = tk.Label(image=next_button,bg="#7f7278")
         stop_button_label = tk.Label(image=stop_button,bg="#7f7278")
-        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[play_button_label,pyplayer.play_songs],[menu_button_label,menu_class.open_menu]] #,[pause_button_label,pyplayer.pause]
+        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[play_button_label,pyplayer.play_songs],[menu_button_label,menu_class.open_menu],[shuffle_button_label,pyplayer.shuffle_list],[repeat_button_label,pyplayer.repeat_list]] #,[pause_button_label,pyplayer.pause]
         vol_var = tk.DoubleVar()
         #vol = tk.Scale(mycanvas,variable=vol_var,command=pyplayer.get_volume,troughcolor='#7f7278',width='10',from_=0,to=100,bg='#7f7278',resolution=1,orient='horizontal',length=100,bd=0,showvalue=False,sliderlength=30)
         #vol.pack(anchor='se',side='bottom',pady=70,padx=10)
@@ -353,6 +367,13 @@ class pyplayer(object):
 
         #co-ordinates for buttons  change here
         mycanvas.create_window(15,15,window=menu_button_label,anchor='c')
+
+        mycanvas.create_window(40,50,window=shuffle_button_label,anchor='c')#shuffle function
+        mycanvas.create_window(40,90,window=repeat_button_label,anchor='c')#shuffle function
+
+        '''
+        add reapat one or repeat many button
+        '''
 
         mycanvas.create_window(300,70,window=play_button_label,anchor='c')
         mycanvas.create_window(100,70,window=stop_button_label,anchor='c')
@@ -370,7 +391,10 @@ class pyplayer(object):
         for i in list_file_box.readlines():
             i = i.split('\\')[-1]
             current_mylist.insert(END,'     '+i)
-        current_mylist.bind('<<ListboxSelect>>',pyplayer.CurSelect)
+        current_mylist.bind('<Double-1>',pyplayer.CurSelect)
+        current_mylist.bind('<Return>',pyplayer.CurSelect)
+
+        #current_mylist.bind('<<ListboxSelect>>',pyplayer.CurSelect)
         current_mylist.pack(pady=0,fill='both',side='top')
         window.mainloop()
         return play_button_label,pause_button_label
