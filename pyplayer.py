@@ -7,7 +7,7 @@ from eyed3 import id3
 import hashlib
 import sys
 from PIL import ImageTk, Image
-import random
+from random import SystemRandom
 try:
     import vlc
 except:
@@ -55,7 +55,8 @@ class menu_class(object):
         enc_file_list.append(window_filename)
         dir_files = open(".pyplayerdata/file_monitoring.pyplayer",'a+')
         for dir_list in enc_file_list:
-            dir_files.write(dir_list+'\n')
+            if dir_list != '':
+                dir_files.write(dir_list+'\n')
         dir_files.close()
         pass
 
@@ -91,10 +92,28 @@ class menu_class(object):
 
 class pyplayer(object):
     """docstring forpyplayer."""
+
     def shuffle_list(arg): #shuffle the list from here come up with a algorithm shit Head
-        print('shuffle')
-        #global_playlist = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()
-        #for i in range(0,len(global_playlist)):
+        global_playlist = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()
+        shuffle_list_list = []
+        cryptogen = SystemRandom()
+        for i in range(0,len(global_playlist)):
+            set = 'n'
+            x = cryptogen.randrange(len(global_playlist))
+            xx = global_playlist[x]
+            global_playlist.remove(global_playlist[x])
+            shuffle_list_list.append(xx)
+        sl = open('.pyplayerdata/shuffle.txt','w+')
+        current_mylist.delete(0,'end')
+        for i in shuffle_list_list:
+            sl.write(i)
+        sl.close()
+        for i in shuffle_list_list:
+            i = i.split('\\')[-1]
+            current_mylist.insert(END,'     '+i)
+        current_mylist.pack(pady=0,fill='both',side='top')
+
+
     def repeat_list(arg):
         print('repeaet')
 
@@ -286,7 +305,6 @@ class pyplayer(object):
             default_album_label.pack()
             mycanvas.create_window(460,70,window=default_album_label,anchor='w')
             '''
-            #print('awwwwwwwaofihcanluktabckeshgcabjkhgcfabjshgcfbajkhfcgb'+str(e))
             pass
 
         #art_button = PhotoImage(file=str(sha1.hexdigest()+'.png'))
