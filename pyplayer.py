@@ -202,7 +202,6 @@ class pyplayer(object):
     def CurSelect(arg):
         global media_palyer
 
-
         value=str(current_mylist.get(current_mylist.curselection())).strip('\n').strip(' ')
         list_file = open('.pyplayerdata/config.pyplayer','r+')
         current_playlist = str(list_file.readlines()[0]).strip('\n')
@@ -276,7 +275,14 @@ class pyplayer(object):
             #img = img.resize((200,200),Image.ANTIALIAS)
             mycanvas.create_image(460,75,image=img,anchor='w')
         except Exception as e:
-            print(e)
+            '''
+            default_album_button = PhotoImage(file='assets/default.png')
+            #default_album_button = default_album_button.subsample(2,2)
+            default_album_label = tk.Label(image=default_album_button,bg="#7f7278")
+            default_album_label.pack()
+            mycanvas.create_window(460,70,window=default_album_label,anchor='w')
+            '''
+            print('awwwwwwwaofihcanluktabckeshgcabjkhgcfabjshgcfbajkhfcgb'+str(e))
             pass
 
         #art_button = PhotoImage(file=str(sha1.hexdigest()+'.png'))
