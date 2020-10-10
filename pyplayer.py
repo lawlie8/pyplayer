@@ -117,6 +117,7 @@ class pyplayer(object):
             if var_find !=1:
                 current_mylist.delete(0,'end')
         else:
+
             for i in global_playlist:
                 i = i.split('\\')[-1]
                 current_mylist.insert(END,'     '+i)
@@ -149,8 +150,79 @@ class pyplayer(object):
         pyplayer.CurSelect(shuffle_list_list[0])
         global_playlist.close()
         sl.close()
+
     def repeat_list(arg):
-        print('repeaet')
+        try:
+            configure_file = open('.pyplayerdata/config.pyplayer','r+')
+            config_file = configure_file.readlines()
+            configure_file.close()
+
+            if config_file[1].strip('\n') == 'repeat_one':
+                config_file[1] = 'repeat_all'
+                xx = open('.pyplayerdata/config.pyplayer','w+')
+                for i in config_file:
+                    xx.write(i)
+                xx.close()
+                repeat_button = PhotoImage(file='assets/repeat-one.png')
+                repeat_button = repeat_button.subsample(4,4)
+                repeat_button_label = tk.Label(image=repeat_button,bg="#7f7278")
+                repeat_button_label.pack()
+                repeat_button_label.bind('<Button-1>',pyplayer.repeat_all_list)
+
+                mycanvas.create_window(40,90,tags=('repeat_something',),window=repeat_button_label,anchor='c')#shuffle function
+
+                print('repeat_all')
+            try:
+                mycanvas.update('repeat_button_label')
+                mycanvas.update('pause_button_label')
+            except:
+                mycanvas.update('play_button_label')
+                mycanvas.update('repeat_all_button_label')
+
+            configure_file.close()
+        except:
+            try:
+                mycanvas.update('repeat_button_label')
+                mycanvas.update('pause_button_label')
+            except:
+                mycanvas.update('play_button_label')
+                mycanvas.update('repeat_all_button_label')
+
+    def repeat_all_list(arg):
+        try:
+            configure_file = open('.pyplayerdata/config.pyplayer','r+')
+            config_file = configure_file.readlines()
+            configure_file.close()
+
+            if config_file[1].strip('\n') == 'repeat_all':
+                config_file[1] = 'repeat_one'
+                xx = open('.pyplayerdata/config.pyplayer','w+')
+                for i in config_file:
+                    xx.write(i)
+                xx.close()
+                repeat_all_button = PhotoImage(file='assets/repeat-all.png')
+                repeat_all_button = repeat_all_button.subsample(4,4)
+                repeat_all_button_label = tk.Label(image=repeat_all_button,bg="#7f7278")
+                repeat_all_button_label.pack()
+                repeat_all_button_label.bind('<Button-1>',pyplayer.repeat_list)
+                mycanvas.create_window(40,90,tags=('repeat_something1',),window=repeat_all_button_label,anchor='c')#shuffle function
+
+                print('repeat_one')
+            try:
+                mycanvas.update('repeat_button_label')
+                mycanvas.update('pause_button_label')
+            except:
+                mycanvas.update('play_button_label')
+                mycanvas.update('repeat_all_button_label')
+
+            configure_file.close()
+        except:
+            try:
+                mycanvas.update('repeat_button_label')
+                mycanvas.update('pause_button_label')
+            except:
+                mycanvas.update('play_button_label')
+                mycanvas.update('repeat_all_button_label')
 
     def initilise(arg):
         os.system('mkdir .pyplayerdata')
@@ -403,7 +475,8 @@ class pyplayer(object):
         shuffle_button = shuffle_button.subsample(4,4)
         shuffle_button_label = tk.Label(image=shuffle_button,bg="#7f7278")
 
-        repeat_button = PhotoImage(file='assets/repeat.png')
+        global repeat_button_label
+        repeat_button = PhotoImage(file='assets/repeat-one.png')
         repeat_button = repeat_button.subsample(4,4)
         repeat_button_label = tk.Label(image=repeat_button,bg="#7f7278")
 
@@ -414,7 +487,7 @@ class pyplayer(object):
         prev_button_label = tk.Label(image=prev_button,bg="#7f7278")
         next_button_label = tk.Label(image=next_button,bg="#7f7278")
         stop_button_label = tk.Label(image=stop_button,bg="#7f7278")
-        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[play_button_label,pyplayer.play_songs],[menu_button_label,menu_class.open_menu],[shuffle_button_label,pyplayer.shuffle_list],[repeat_button_label,pyplayer.repeat_list]] #,[pause_button_label,pyplayer.pause]
+        ll = [[stop_button_label,pyplayer.stop],[prev_button_label,pyplayer.prev],[next_button_label,pyplayer.next],[play_button_label,pyplayer.play_songs],[menu_button_label,menu_class.open_menu],[shuffle_button_label,pyplayer.shuffle_list],[repeat_button_label,pyplayer.repeat_all_list]] #,[pause_button_label,pyplayer.pause]
         vol_var = tk.DoubleVar()
         #vol = tk.Scale(mycanvas,variable=vol_var,command=pyplayer.get_volume,troughcolor='#7f7278',width='10',from_=0,to=100,bg='#7f7278',resolution=1,orient='horizontal',length=100,bd=0,showvalue=False,sliderlength=30)
         #vol.pack(anchor='se',side='bottom',pady=70,padx=10)
@@ -426,7 +499,7 @@ class pyplayer(object):
         mycanvas.create_window(15,15,window=menu_button_label,anchor='c')
 
         mycanvas.create_window(40,50,window=shuffle_button_label,anchor='c')#shuffle function
-        mycanvas.create_window(40,90,window=repeat_button_label,anchor='c')#shuffle function
+        mycanvas.create_window(40,90,tags=('repeat_something',),window=repeat_button_label,anchor='c')#shuffle function
 
         '''
         add reapat one or repeat many button
@@ -472,7 +545,10 @@ class pyplayer(object):
 
         return play_button_label,pause_button_label
     def change_focus(arg):
+        search_entry.delete(0,'end')
+        search_entry.insert(0,'   Search')
         current_mylist.focus()
+        open('.pyplayerdata/s.flag','w+').write('0')
 
 
 k = pyplayer()
