@@ -175,12 +175,18 @@ class pyplayer(object):
             try:
                 mycanvas.update('repeat_button_label')
                 mycanvas.update('pause_button_label')
-            except:
                 mycanvas.update('play_button_label')
                 mycanvas.update('repeat_all_button_label')
 
+            except:
+                mycanvas.update('pause_button_label')
+                mycanvas.update('play_button_label')
+                mycanvas.update('repeat_all_button_label')
+                mycanvas.update('repeat_button_label')
+
             configure_file.close()
         except:
+            print('\n\n184\n\n')
             try:
                 mycanvas.update('repeat_button_label')
                 mycanvas.update('pause_button_label')
@@ -188,7 +194,15 @@ class pyplayer(object):
                 mycanvas.update('play_button_label')
                 mycanvas.update('repeat_all_button_label')
 
+
+
     def repeat_all_list(arg):
+
+        #get player state and use pause play button aprroproately 
+
+
+
+
         try:
             configure_file = open('.pyplayerdata/config.pyplayer','r+')
             config_file = configure_file.readlines()
@@ -257,6 +271,36 @@ class pyplayer(object):
         #current_song = r'C:/Users/Lawlie8/Downloads\Music\Santara - Suki.mp3'
 
     def play_songs(arg):
+        #i am too deep in this shit no way back to get every thing together i am gonna continue this crapcode!. and remember never use bugged libraries in future
+        configure_file = open('.pyplayerdata/config.pyplayer','r+')
+        config_file = configure_file.readlines()
+        configure_file.close()
+        if config_file[1].strip('\n') == 'repeat_one':
+            repeat_all_button = PhotoImage(file='assets/repeat-all.png')
+            repeat_all_button = repeat_all_button.subsample(4,4)
+            repeat_all_button_label = tk.Label(image=repeat_all_button,bg="#7f7278")
+            repeat_all_button_label.pack()
+            repeat_all_button_label.bind('<Button-1>',pyplayer.repeat_list)
+            mycanvas.create_window(40,90,tags=('repeat_something1',),window=repeat_all_button_label,anchor='c')#shuffle function
+            try:
+                mycanvas.update('repeat_all_button_label')
+                mycanvas.update('repeat_button_label')
+                k = 12 + "sss"
+            except:
+                pass
+        elif config_file[1].strip('\n') == 'repeat_all':
+            repeat_button = PhotoImage(file='assets/repeat-one.png')
+            repeat_button = repeat_button.subsample(4,4)
+            repeat_button_label = tk.Label(image=repeat_button,bg="#7f7278")
+            repeat_button_label.pack()
+            repeat_button_label.bind('<Button-1>',pyplayer.repeat_all_list)
+            mycanvas.create_window(40,90,tags=('repeat_something',),window=repeat_button_label,anchor='c')#shuffle function
+            try:
+                mycanvas.update('repeat_something')
+                mycanvas.update('repeat_something1')
+            except:
+                pass
+
         media_palyer.audio_set_volume(100)
         media_palyer.play()
         #play_button_label.pack_forget()
@@ -266,6 +310,10 @@ class pyplayer(object):
         pause_button_label.pack()
         mycanvas.create_window(300,70,window=pause_button_label,anchor='c')
         pause_button_label.bind('<Button-1>',pyplayer.pause)
+
+
+
+
 
 
         #Ignore all errors for the following code, it works
@@ -309,6 +357,35 @@ class pyplayer(object):
 
 
     def pause(arg):
+        #why this you ask?? cause for some reason whenever i update canvas PhotoImage obj gets wiped from memory
+        configure_file = open('.pyplayerdata/config.pyplayer','r+')
+        config_file = configure_file.readlines()
+        configure_file.close()
+        if config_file[1].strip('\n') == 'repeat_one':
+            repeat_all_button = PhotoImage(file='assets/repeat-all.png')
+            repeat_all_button = repeat_all_button.subsample(4,4)
+            repeat_all_button_label = tk.Label(image=repeat_all_button,bg="#7f7278")
+            repeat_all_button_label.pack()
+            repeat_all_button_label.bind('<Button-1>',pyplayer.repeat_list)
+            mycanvas.create_window(40,90,tags=('repeat_something1',),window=repeat_all_button_label,anchor='c')#shuffle function
+            try:
+                mycanvas.update('repeat_all_button_label')
+                mycanvas.update('repeat_button_label')
+                k = 12 + "sss"
+            except:
+                pass
+        elif config_file[1].strip('\n') == 'repeat_all':
+            repeat_button = PhotoImage(file='assets/repeat-one.png')
+            repeat_button = repeat_button.subsample(4,4)
+            repeat_button_label = tk.Label(image=repeat_button,bg="#7f7278")
+            repeat_button_label.pack()
+            repeat_button_label.bind('<Button-1>',pyplayer.repeat_all_list)
+            mycanvas.create_window(40,90,tags=('repeat_something',),window=repeat_button_label,anchor='c')#shuffle function
+            try:
+                mycanvas.update('repeat_something')
+                mycanvas.update('repeat_something1')
+            except:
+                pass
 
         media_palyer.pause()
         #pause_button_label.pack_forget()
