@@ -152,6 +152,25 @@ class pyplayer(object):
         sl.close()
 
     def repeat_list(arg):
+
+
+
+        if media_palyer.is_playing() == 1:
+            pause_button = PhotoImage(file='assets/pause.png')
+            pause_button = pause_button.subsample(2,2)
+            pause_button_label = tk.Label(image=pause_button,bg="#7f7278")
+            pause_button_label.pack()
+            mycanvas.create_window(300,70,window=pause_button_label,anchor='c')
+            pause_button_label.bind('<Button-1>',pyplayer.pause)
+
+        else:
+            play_button = PhotoImage(file='assets/play.png')
+            play_button = play_button.subsample(2,2)
+            play_button_label = tk.Label(image=play_button,bg="#7f7278")
+            play_button_label.pack()
+            mycanvas.create_window(300,70,window=play_button_label,anchor='c')
+            play_button_label.bind('<Button-1>',pyplayer.play_songs)
+            
         try:
             configure_file = open('.pyplayerdata/config.pyplayer','r+')
             config_file = configure_file.readlines()
@@ -198,7 +217,22 @@ class pyplayer(object):
 
     def repeat_all_list(arg):
 
-        #get player state and use pause play button aprroproately 
+        #get player state and use pause play button aprroproately
+        if media_palyer.is_playing() == 1:
+            pause_button = PhotoImage(file='assets/pause.png')
+            pause_button = pause_button.subsample(2,2)
+            pause_button_label = tk.Label(image=pause_button,bg="#7f7278")
+            pause_button_label.pack()
+            mycanvas.create_window(300,70,window=pause_button_label,anchor='c')
+            pause_button_label.bind('<Button-1>',pyplayer.pause)
+
+        else:
+            play_button = PhotoImage(file='assets/play.png')
+            play_button = play_button.subsample(2,2)
+            play_button_label = tk.Label(image=play_button,bg="#7f7278")
+            play_button_label.pack()
+            mycanvas.create_window(300,70,window=play_button_label,anchor='c')
+            play_button_label.bind('<Button-1>',pyplayer.play_songs)
 
 
 
