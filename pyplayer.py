@@ -58,18 +58,48 @@ class menu_class(object):
             if dir_list != '':
                 dir_files.write(dir_list+'\n')
         dir_files.close()
+        
+        mylist.delete(0,'end')
+        mylist.insert(END,"    +++ Monitoring following dir's +++     ",' ')
+        fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
+        #print(fm.read())
+        x = fm.read().split('\n')
+        for i in x:
+            if i != '':
+                mylist.insert(END,'      '+i)
+
+        fm.close()
         pass
 
-
+    def full_refresh_playlist_window():
+        import glob
+        files2=[]
+        fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
+        global_playlist = open('.pyplayerdata/global_playlist.pyplayer','w+')
+        x = fm.read().split('\n')
+        for i in x:
+            if i!='':
+                files = glob.glob(i + '/**/*.mp3', recursive=True)
+            for i in files:
+                files2.append(i)
+        for i in files2:
+            try:
+                global_playlist.write(str(i+'\n'))
+            except:
+                print('some')
+        global_playlist.close()
+        pyplayer.update_list()
+        pass
 
     def open_menu(arg):
-        global menu_window
+        global menu_window,mylist
         menu_window = tk.Tk()
         menu_window.tk.call('tk', 'scaling', 2.0)
         menu_window.geometry("720x720")
         menu_window.title("Menu")
         menu_window.configure(bg='#333338')
         menu_window.iconbitmap('assets/py_icon.ico')
+
         mylist = Listbox(menu_window,width='90',height='7',bg='white',bd=0,fg='black')#yscrollcommand=enc_file_scroll.set,
         mylist.insert(END,"    +++ Monitoring following dir's +++     ",' ')
         fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
@@ -83,8 +113,12 @@ class menu_class(object):
         mylist.pack(pady=0,anchor='w',padx=50,fill='x')
         refresh_button = tk.Button(menu_window,text='Refresh',activebackground='black',highlightcolor='black',bd=1,relief='flat',height=0,width=10,fg='white',bg='#338237',command=lambda :menu_class.refresh_playlist_window())
         add_dirs_button = tk.Button(menu_window,text='Add dirs',activebackground='black',highlightcolor='black',bd=1,relief='flat',height=0,width=10,fg='white',bg='#338237',command=lambda :menu_class.add_dirs_function())
+        full_refresh_button = tk.Button(menu_window,text='Full-refresh',activebackground='black',highlightcolor='black',bd=1,relief='flat',height=0,width=10,fg='white',bg='#338237',command=lambda :menu_class.full_refresh_playlist_window())
+
         add_dirs_button.place(x=50,y=300)
         refresh_button.place(x=150,y=300)
+        full_refresh_button.place(x=250,y=300)
+
         menu_window.mainloop()
         pass
 
@@ -92,6 +126,16 @@ class menu_class(object):
 
 class pyplayer(object):
     """docstring forpyplayer."""
+
+    def update_list():
+        file = open('.pyplayerdata/global_playlist.pyplayer','r+')
+        current_mylist.delete(0,'end')
+        for i in file.readlines():
+            i = i.split('\\')[-1]
+
+            current_mylist.insert(END,'     '+i)
+        file.close()
+
     def search(arg):
 
         var_find = 0
@@ -170,7 +214,7 @@ class pyplayer(object):
             play_button_label.pack()
             mycanvas.create_window(300,70,window=play_button_label,anchor='c')
             play_button_label.bind('<Button-1>',pyplayer.play_songs)
-            
+
         try:
             configure_file = open('.pyplayerdata/config.pyplayer','r+')
             config_file = configure_file.readlines()
@@ -274,6 +318,8 @@ class pyplayer(object):
 
     def initilise(arg):
         os.system('mkdir .pyplayerdata')
+        os.system('mkdir .album-art')
+
         if os.path.isfile('.pyplayerdata/file_monitoring.pyplayer'):
             pass
         else:
