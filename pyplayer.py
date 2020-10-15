@@ -430,11 +430,91 @@ class pyplayer(object):
 
 
     def next(arg):
-        print('next')
         global media_palyer
         curr_song_file = open('.pyplayerdata/cur-song','r+')
         x = int(curr_song_file.readlines()[0].strip('\n'))+1
-        print(x)
+        to_play = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()[x].strip('\n')
+        media_palyer.stop()
+        media_palyer= vlc.MediaPlayer(to_play)
+        media_palyer.play()
+        curr_song_file.close()
+        curr_song_file = open('.pyplayerdata/cur-song','w+')
+        curr_song_file.write(str(x))
+        curr_song_file.close()
+
+        '''
+        change
+        '''
+        try:
+            mycanvas.delete('label')
+        except:
+            pass
+        value = to_play.split('\\')[-1]
+        tag = id3.Tag()
+        tag.parse(to_play)
+        artist_value = tag.artist
+        album_value = tag.album
+        song_value = tag.title
+        try:
+            sha1 = hashlib.sha1()
+            BUF_SIZE = 65536
+            with open(to_play, 'rb') as f:
+                while True:
+                    data = f.read(BUF_SIZE)
+                    if not data:
+                        break
+                    sha1.update(data)
+
+            for image in tag.images:
+                image_file = open('.album-art/'+sha1.hexdigest()+'.png','wb')
+                image_file.write(image.image_data)
+                image_file.close()
+        except:
+            pass
+        #print("song title"+str(tag.images))
+        if str(tag.title) == 'None':
+            song_value = value[0:55]
+
+        song_name_label = tk.Label(mycanvas,text=song_value,bg='#7f7278',fg='white')
+        song_name_label.pack()
+        song_artist_label = tk.Label(mycanvas,text=artist_value,bg='#7f7278',fg='white')
+        song_artist_label.pack()
+        song_album_label = tk.Label(mycanvas,text=album_value,bg='#7f7278',fg='white')
+        song_album_label.pack()
+        try:
+
+            basewidth = 120
+            global img
+            img = Image.open(str('.album-art/'+sha1.hexdigest()+'.png'))
+            wpercent = (basewidth/float(img.size[0]))
+            hsize = int((float(img.size[1])*float(wpercent)))
+            img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+            img.save(str('.album-art/'+sha1.hexdigest()+'.png'))
+            img = ImageTk.PhotoImage(Image.open(str('.album-art/'+sha1.hexdigest()+'.png')))
+            #img = img.resize((200,200),Image.ANTIALIAS)
+            mycanvas.create_image(460,75,image=img,anchor='w')
+        except Exception as e:
+            pass
+        #add mutagen or id3 code to get song artist
+        mycanvas.create_window(600,40,tags=('label',),window=song_name_label,anchor='w')
+        mycanvas.create_window(600,70,tags=('label',),window=song_artist_label,anchor='w')
+        mycanvas.create_window(600,100,tags=('label',),window=song_album_label,anchor='w')
+
+        try:
+            mycanvas.update('song_name_label')
+        except:
+            pass
+        pyplayer.play_songs(arg)
+        pass
+
+
+
+
+
+    def prev(arg):
+        global media_palyer
+        curr_song_file = open('.pyplayerdata/cur-song','r+')
+        x = int(curr_song_file.readlines()[0].strip('\n'))-1
         to_play = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()[x].strip('\n')
         media_palyer.stop()
         media_palyer= vlc.MediaPlayer(to_play)
@@ -510,12 +590,6 @@ class pyplayer(object):
         pyplayer.play_songs(arg)
         pass
 
-
-
-
-
-    def prev(arg):
-        print('prev')
 
 
     def pause(arg):
