@@ -407,6 +407,8 @@ class pyplayer(object):
             print('play')
             #img change doesn't work
             current_mylist.bind('<space>',pyplayer.pause)
+            current_mylist.bind('.',pyplayer.next)
+            current_mylist.bind('0',pyplayer.prev)
 
     def get_volume(arg):
         print(arg)
@@ -431,8 +433,11 @@ class pyplayer(object):
 
     def next(arg):
         global media_palyer
+        current_mylist.selection_clear(0,END)
         curr_song_file = open('.pyplayerdata/cur-song','r+')
         x = int(curr_song_file.readlines()[0].strip('\n'))+1
+        current_mylist.select_set(x)
+        current_mylist.see(x)
         to_play = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()[x].strip('\n')
         media_palyer.stop()
         media_palyer= vlc.MediaPlayer(to_play)
@@ -513,8 +518,12 @@ class pyplayer(object):
 
     def prev(arg):
         global media_palyer
+        current_mylist.selection_clear(0,END)
         curr_song_file = open('.pyplayerdata/cur-song','r+')
         x = int(curr_song_file.readlines()[0].strip('\n'))-1
+        current_mylist.select_set(x)
+        current_mylist.see(x)
+
         to_play = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()[x].strip('\n')
         media_palyer.stop()
         media_palyer= vlc.MediaPlayer(to_play)
