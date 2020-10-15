@@ -44,6 +44,7 @@ class menu_class(object):
             except:
                 pass
         global_playlist.close()
+        pyplayer.update_list()
         pass
 
 
@@ -58,7 +59,7 @@ class menu_class(object):
             if dir_list != '':
                 dir_files.write(dir_list+'\n')
         dir_files.close()
-        
+
         mylist.delete(0,'end')
         mylist.insert(END,"    +++ Monitoring following dir's +++     ",' ')
         fm = open('.pyplayerdata/file_monitoring.pyplayer','r+')
@@ -344,7 +345,7 @@ class pyplayer(object):
         return check_file.readlines()[0]
 
     def __init__(self):
-        global search_flag
+        global search_flag,media_palyer
         instance = open('.pyplayerdata/in.txt','w+').write('on')
         search_flag = open('.pyplayerdata/s.flag','w+').write('0')
         print('ss')
@@ -430,6 +431,87 @@ class pyplayer(object):
 
     def next(arg):
         print('next')
+        global media_palyer
+        curr_song_file = open('.pyplayerdata/cur-song','r+')
+        x = int(curr_song_file.readlines()[0].strip('\n'))+1
+        print(x)
+        to_play = open('.pyplayerdata/global_playlist.pyplayer','r+').readlines()[x].strip('\n')
+        media_palyer.stop()
+        media_palyer= vlc.MediaPlayer(to_play)
+        media_palyer.play()
+        curr_song_file.close()
+        curr_song_file = open('.pyplayerdata/cur-song','w+')
+        curr_song_file.write(str(x))
+        curr_song_file.close()
+
+        '''
+        change
+        '''
+        try:
+            mycanvas.delete('label')
+        except:
+            pass
+        value = to_play.split('\\')[-1]
+        tag = id3.Tag()
+        tag.parse(to_play)
+        artist_value = tag.artist
+        album_value = tag.album
+        song_value = tag.title
+        try:
+            sha1 = hashlib.sha1()
+            BUF_SIZE = 65536
+            with open(to_play, 'rb') as f:
+                while True:
+                    data = f.read(BUF_SIZE)
+                    if not data:
+                        break
+                    sha1.update(data)
+
+            for image in tag.images:
+                image_file = open('.album-art/'+sha1.hexdigest()+'.png','wb')
+                image_file.write(image.image_data)
+                image_file.close()
+        except:
+            pass
+        #print("song title"+str(tag.images))
+        if str(tag.title) == 'None':
+            song_value = value[0:55]
+
+        song_name_label = tk.Label(mycanvas,text=song_value,bg='#7f7278',fg='white')
+        song_name_label.pack()
+        song_artist_label = tk.Label(mycanvas,text=artist_value,bg='#7f7278',fg='white')
+        song_artist_label.pack()
+        song_album_label = tk.Label(mycanvas,text=album_value,bg='#7f7278',fg='white')
+        song_album_label.pack()
+        try:
+        #print(str(value+'.png'))
+
+            basewidth = 120
+            global img
+            img = Image.open(str('.album-art/'+sha1.hexdigest()+'.png'))
+            wpercent = (basewidth/float(img.size[0]))
+            hsize = int((float(img.size[1])*float(wpercent)))
+            img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+            img.save(str('.album-art/'+sha1.hexdigest()+'.png'))
+            img = ImageTk.PhotoImage(Image.open(str('.album-art/'+sha1.hexdigest()+'.png')))
+            #img = img.resize((200,200),Image.ANTIALIAS)
+            mycanvas.create_image(460,75,image=img,anchor='w')
+        except Exception as e:
+            pass
+        #add mutagen or id3 code to get song artist
+        mycanvas.create_window(600,40,tags=('label',),window=song_name_label,anchor='w')
+        mycanvas.create_window(600,70,tags=('label',),window=song_artist_label,anchor='w')
+        mycanvas.create_window(600,100,tags=('label',),window=song_album_label,anchor='w')
+
+        try:
+            mycanvas.update('song_name_label')
+        except:
+            pass
+        pyplayer.play_songs(arg)
+        pass
+
+
+
 
 
     def prev(arg):
@@ -492,15 +574,20 @@ class pyplayer(object):
 
     def CurSelect(arg):
         global media_palyer
-
+        try:
+            media_palyer.stop()
+        except:
+            pass
         value=str(current_mylist.get(current_mylist.curselection())).strip('\n').strip(' ')
         list_file = open('.pyplayerdata/config.pyplayer','r+')
         current_playlist = str(list_file.readlines()[0]).strip('\n')
         song_list = open('.pyplayerdata/'+current_playlist+'.pyplayer','r+').readlines()
+        curr_song_file = open('.pyplayerdata/cur-song','w+')
         for song,ind in zip(song_list,range(0,len(song_list))):
             if(song.split('\\')[-1].strip('\n')==value):
                 to_play = song_list[ind].strip('\n')
-
+                curr_song_file.write(str(ind))
+        curr_song_file.close()
         try:#kill me please some one just kill me this sucks i shud have read documentation
             if(open('.pyplayerdata/in.txt','r+').read() == 'on'):
                 media_palyer= vlc.MediaPlayer(to_play)
@@ -514,7 +601,6 @@ class pyplayer(object):
         except:
             pass
 
-        instance = open('.pyplayerdata/in.txt','w+').write('off')
         #instance.close()
         try:
             mycanvas.delete('label')
@@ -691,11 +777,6 @@ class pyplayer(object):
         search_entry.bind('<Escape>',pyplayer.change_focus)
 
         current_mylist.pack(pady=0,fill='both',side='top')
-        #default_album_button = PhotoImage(file='assets/default.png')
-        #default_album_button = default_album_button.subsample(2,2)
-        #default_album_label = tk.Label(image=default_album_button,bg="#7f7278")
-        #default_album_label.pack()
-        #mycanvas.create_window(460,70,window=default_album_label,anchor='w')
 
 
         window.mainloop()
