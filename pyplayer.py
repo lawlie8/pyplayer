@@ -782,7 +782,8 @@ class pyplayer(object):
 
         window.protocol('WM_DELETE_WINDOW',menu_class.destroy_menu)
 
-        mycanvas = tk.Canvas(window,bg="#7f7278",height=150,bd='0',highlightthickness=0)
+        mycanvas = tk.Canvas(window,bg="#7f7278",height=200,bd='0',highlightthickness=0)
+
         mycanvas.pack(anchor='w',fill='x')
         next_button = PhotoImage(file='assets/next.png')
         next_button = next_button.subsample(2,2) #reduced size of image
@@ -822,6 +823,7 @@ class pyplayer(object):
             i[0].bind('<Button-1>',i[1])
 
         #co-ordinates for buttons  change here
+
         mycanvas.create_window(15,15,window=menu_button_label,anchor='c')
 
         mycanvas.create_window(40,50,window=shuffle_button_label,anchor='c')#shuffle function
@@ -835,6 +837,11 @@ class pyplayer(object):
         mycanvas.create_window(100,70,window=stop_button_label,anchor='c')
         mycanvas.create_window(200,70,window=prev_button_label,anchor='c')
         mycanvas.create_window(400,70,window=next_button_label,anchor='c')
+
+        # TODO: add line here
+
+        window.bind('<Configure>',pyplayer.config_window)
+
         # TODO: add control buttons int the canvas
         list_file = open('.pyplayerdata/config.pyplayer','r+')
         current_playlist = str(list_file.readlines()[0]).strip('\n')
@@ -860,11 +867,22 @@ class pyplayer(object):
         search_entry.bind('<Escape>',pyplayer.change_focus)
 
         current_mylist.pack(pady=0,fill='both',side='top')
-
-
         window.mainloop()
 
+        #canvas_id = mycanvas.create_line(50,150,2224-50,150,tag='line')
+
         return play_button_label,pause_button_label
+
+    def config_window(event):
+        try:
+            mycanvas.delete('line')
+        except:
+            pass
+        if event.width > 1000:
+            canvas_id = mycanvas.create_rectangle(20,160,event.width-20,160,tag='line',fill='#fff',outline='#fff')
+        else:
+            canvas_id = mycanvas.create_rectangle(20,160,1204,160,tag='line',fill='#fff',outline='#fff')
+
     def change_focus(arg):
         search_entry.delete(0,'end')
         search_entry.insert(0,'   Search')
